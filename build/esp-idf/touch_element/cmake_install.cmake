@@ -1,4 +1,4 @@
-# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.4.2/components/touch_element
+# Install script for directory: C:/Espressif/frameworks/esp-idf-v5.5/components/touch_element
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
