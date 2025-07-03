@@ -10,8 +10,8 @@ void show_banner(void) {
     printf("##  ESP32-S3 FreeRTOS LED Blinker + Logger                                       ##\n");
     printf("##                                                                               ##\n");
     printf("##  Author     : Dark Bors                                                       ##\n");
-    printf("##  Version    : v1.0.1                                                          ##\n");
-    printf("##  Date       : July 1, 2025                                                    ##\n");
+    printf("##  Version    : v1.1.0                                                          ##\n");
+    printf("##  Date       : July 4, 2025                                                    ##\n");
     printf("##                                                                               ##\n");
     printf("##  This demo shows multitasking and GPIO control using FreeRTOS and ESP-IDF.    ##\n");
     printf("###################################################################################\n\n");
@@ -26,7 +26,7 @@ void show_banner(void) {
 // Define Project-Level Constants
 // ==============================
 #define LED_GPIO GPIO_NUM_2         // GPIO number for onboard LED. GPIO2 is often tied to the onboard blue LED.
-#define LOGGING_TIMEOUT_SEC 120  // Stop task after 120 seconds 
+#define LOGGING_TIMEOUT_SEC 30  // Stop task after 120 seconds 
 
 static const char *TAG = "FREERTOS_DEMO"; // Tag for logging messages, used to filter logs in the console
 const int log_interval = 5; // Log every 5 seconds
@@ -137,12 +137,43 @@ void logging_task(void *pvParameter)
             // %lu formats the stack watermark as an unsigned long integer
             // This log will show how long the system has been running, the current state of the LED, and how much stack space is left
             // This is useful for debugging and monitoring the system's health
+        
         }
 
         // Optional: ESP_LOGI(TAG, "Tick: %lus", seconds_elapsed);
     }
 
-    // vTaskDelete(NULL); // Optional
+    // EOT: Task ran long enough. Start shutdown sequence.
+
+    // 1. Print EOT message
+    ESP_LOGI(TAG, "End of Task (EOT) reached at %lu seconds", (unsigned long)seconds_elapsed);
+
+    // 2. Blink LED at 5Hz (10 blinks = 2 seconds)
+    ESP_LOGI(TAG, "Start of EOT Notifications");
+    for (int i = 0; i < 20; i++) {
+        gpio_set_level(LED_GPIO, i % 2); // Toggle LED ON/OFF
+        vTaskDelay(pdMS_TO_TICKS(100));  // 100ms delay default
+        //for debugging purposes, we can log the blink count
+        ESP_LOGI(TAG, "Blink %d", i + 1);
+        // This will blink the LED ON for 100ms and OFF for 100ms
+
+        // This will blink the LED 10 times, creating a 5Hz blink rate
+        // The LED will be ON for 100ms and OFF for 100ms, resulting
+        // in a total of 2 seconds for the entire blink sequence
+        // The loop runs 10 times, so it will blink the LED 10 times
+    }
+
+    // 3. Ensure LED is off
+    gpio_set_level(LED_GPIO, 0);
+    ESP_LOGI(TAG, "End of EOT notifications");
+
+    // 4. Log halt
+    ESP_LOGW(TAG, "System is now halted. Awaiting manual reset or power cycle.");
+
+    // 5. Sleep forever
+    while (1) {
+        vTaskDelay(portMAX_DELAY);
+    }
 }
 
 
