@@ -1,0 +1,6 @@
+{
+    "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "idf.espIdfPath": "C:/Espressif/frameworks/esp-idf-v5.4.2",
+    "idf.pythonBinPath": "C:/Espressif/python_env/idf5.4_py3.11_env/Scripts/python.exe"
+}
