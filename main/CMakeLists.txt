@@ -1,2 +1,2 @@
-idf_component_register(SRCS "blink_led.c"
+idf_component_register(SRCS "cli_handler.c" "state_machine.c" "blink_led.c"
                     INCLUDE_DIRS ".")

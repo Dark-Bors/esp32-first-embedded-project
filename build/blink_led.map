@@ -23897,9 +23897,10 @@ LOAD C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20241119/xtensa-esp-elf/bin/..
                                   0xd (size before relaxing)
  *fill*         0x420091b2        0x2 
  .text.led_blink_task
-                0x420091b4       0x54 esp-idf/main/libmain.a(blink_led.c.obj)
-                                 0x58 (size before relaxing)
+                0x420091b4       0x52 esp-idf/main/libmain.a(blink_led.c.obj)
+                                 0x5a (size before relaxing)
                 0x420091b4                led_blink_task
+ *fill*         0x42009206        0x2 
  .text.logging_task
                 0x42009208      0x19b esp-idf/main/libmain.a(blink_led.c.obj)
                                 0x1a7 (size before relaxing)
@@ -24846,6 +24847,7 @@ LOAD C:/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20241119/xtensa-esp-elf/bin/..
  .text.nvs_sec_provider_include_impl
                 0x42016d10        0x5 esp-idf/nvs_sec_provider/libnvs_sec_provider.a(nvs_sec_provider.c.obj)
                 0x42016d10                nvs_sec_provider_include_impl
+ *fill*         0x42016d15        0x0 
  *fill*         0x42016d15        0x0 
  *fill*         0x42016d15        0x0 
  *fill*         0x42016d15        0x0 
