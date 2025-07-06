@@ -1,0 +1,67 @@
+Command: ninja flash
+[1/12] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\97254\esp_projects\blink_led\build\bootloader\esp-idf\esptool_py && C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:/Espressif/frameworks/esp-idf-v5.5/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/97254/esp_projects/blink_led/build/bootloader/bootloader.bin"
+Bootloader binary size 0x5260 bytes. 0x2da0 bytes (36%) free.
+[2/12] No install step for 'bootloader'
+[3/12] Completed 'bootloader'
+[4/12] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/state_machine.c.obj
+C:/Users/97254/esp_projects/blink_led/main/state_machine.c:12:16: warning: 'security_level' defined but not used [-Wunused-variable]
+   12 | static uint8_t security_level = 0; // Default security level
+      |                ^~~~~~~~~~~~~~
+C:/Users/97254/esp_projects/blink_led/main/state_machine.c:6:20: warning: 'TAG' defined but not used [-Wunused-variable]
+    6 | static const char *TAG = "STATE_MACHINE"; // Log tag for this module
+      |                    ^~~
+[5/12] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/led_handler.c.obj
+[6/12] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+[7/12] Linking C static library esp-idf\main\libmain.a
+[8/12] Generating esp-idf/esp_system/ld/sections.ld
+[9/12] Linking CXX executable blink_led.elf
+[10/12] Generating binary image from built executable
+esptool.py v4.9.0
+Creating esp32s3 image...
+Merged 2 ELF sections
+Successfully created esp32s3 image.
+Generated C:/Users/97254/esp_projects/blink_led/build/blink_led.bin
+[11/12] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\97254\esp_projects\blink_led\build\esp-idf\esptool_py && C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:/Espressif/frameworks/esp-idf-v5.5/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/97254/esp_projects/blink_led/build/partition_table/partition-table.bin C:/Users/97254/esp_projects/blink_led/build/blink_led.bin"
+blink_led.bin binary size 0x35250 bytes. Smallest app partition is 0x100000 bytes. 0xcadb0 bytes (79%) free.
+[11/12] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Espressif\frameworks\esp-idf-v5.5\components\esptool_py && C:\Espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Espressif/frameworks/esp-idf-v5.5 -D SERIAL_TOOL=C:/Espressif/python_env/idf5.5_py3.11_env/Scripts/python.exe;;C:/Espressif/frameworks/esp-idf-v5.5/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/97254/esp_projects/blink_led/build -P C:/Espressif/frameworks/esp-idf-v5.5/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32s3 -p COM4 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 2MB 0x0 bootloader/bootloader.bin 0x10000 blink_led.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.9.0
+Serial port COM4
+Connecting....
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+MAC: 48:27:e2:e8:b4:dc
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00005fff...
+Flash will be erased from 0x00010000 to 0x00045fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 21088 bytes to 13442...
+Writing at 0x00000000... (100 %)
+Wrote 21088 bytes (13442 compressed) at 0x00000000 in 0.6 seconds (effective 297.8 kbit/s)...
+Hash of data verified.
+Compressed 217680 bytes to 115649...
+Writing at 0x00010000... (12 %)
+Writing at 0x0001cc81... (25 %)
+Writing at 0x000230f1... (37 %)
+Writing at 0x00029bbb... (50 %)
+Writing at 0x000304d0... (62 %)
+Writing at 0x00038423... (75 %)
+Writing at 0x0003e25e... (87 %)
+Writing at 0x00044d78... (100 %)
+Wrote 217680 bytes (115649 compressed) at 0x00010000 in 2.8 seconds (effective 630.8 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 586.7 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

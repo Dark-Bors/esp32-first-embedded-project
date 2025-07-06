@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "blink_led",
-    "project_version":    "v1.1.0-1-g782ab2d-dirty",
+    "project_version":    "v1.2.0-dirty",
     "project_path":       "C:/Users/97254/esp_projects/blink_led",
     "idf_path":           "C:/Espressif/frameworks/esp-idf-v5.5",
     "build_dir":          "C:/Users/97254/esp_projects/blink_led/build",
@@ -1225,7 +1225,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "C:/Users/97254/esp_projects/blink_led/build/esp-idf/main/libmain.a",
-            "sources": [ "C:/Users/97254/esp_projects/blink_led/main/cli_handler.c", "C:/Users/97254/esp_projects/blink_led/main/state_machine.c", "C:/Users/97254/esp_projects/blink_led/main/blink_led.c" ],
+            "sources": [ "C:/Users/97254/esp_projects/blink_led/main/main.c", "C:/Users/97254/esp_projects/blink_led/main/led_handler.c", "C:/Users/97254/esp_projects/blink_led/main/state_machine.c" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {

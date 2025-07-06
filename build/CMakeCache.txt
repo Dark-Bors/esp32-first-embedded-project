@@ -358,6 +358,9 @@ PYTHON:UNINITIALIZED=C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.ex
 //No help, variable specified on the command line.
 PYTHON_DEPS_CHECKED:UNINITIALIZED=1
 
+//No help, variable specified on the command line.
+SDKCONFIG:UNINITIALIZED=c:\Users\97254\esp_projects\blink_led\sdkconfig
+
 //Allow unsafe builds. These builds ARE NOT SECURE.
 UNSAFE_BUILD:BOOL=OFF
 

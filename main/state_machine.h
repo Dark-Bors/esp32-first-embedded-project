@@ -1,5 +1,13 @@
+// File: main/state_machine.h
+
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
+#include <stdbool.h>  // Enables use of `bool`, `true`, `false`
+#include <stdint.h> // Enables use of `uint8_t`, `uint32_t`, etc.
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ===============================
 // ENUM: Define all system states
@@ -51,5 +59,27 @@ void transition_to_state(SystemState new_state);
  * @brief Returns the current system state.
  */
 SystemState get_current_state(void);
+
+/**
+ * @brief Returns current security level (0–3).
+ *        The implementation will later read from physical GPIOs.
+ */
+uint8_t get_security_level(void);
+
+/**
+ * @brief Returns true if security level is sufficient for a given minimum level.
+ *        Example: `is_access_granted(3)` returns true only for level 3.
+ */
+bool is_access_granted(uint8_t required_level);
+
+/**
+ * @brief Temporary dev unlock using plain-text password (TO DELETE).
+ */
+bool check_dev_password(const char *input_password);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // STATE_MACHINE_H
