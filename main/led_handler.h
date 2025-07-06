@@ -14,9 +14,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-#ifdef __cplusplus
-extern "C" {
 #endif
 
 
@@ -69,38 +66,55 @@ void led_handler_tick(void);
 void led_apply_pattern(led_pattern_t pattern);
 
 /**
+<<<<<<< HEAD
  * @brief Immediately turn ON the LED (no timer logic).
+=======
+ * @brief Turn the LED ON (static)
+>>>>>>> recovery/led-patterns
  */
-void led_on(void);
-
-/**
- * @brief Immediately turn OFF the LED (no timer logic).
+=======
+ * @brief Turn the LED OFF (static)
+>>>>>>> recovery/led-patterns
  */
 void led_off(void);
 
 /**
+<<<<<<< HEAD
  * @brief Set the LED to a static state (ON or OFF), bypassing pattern logic.
  * 
  * @param on Pass true to turn ON, false to turn OFF.
+=======
+ * @brief Set LED to a static state (ON or OFF)
+ * 
+ * @param on true for ON, false for OFF
+>>>>>>> recovery/led-patterns
  */
 void led_set_static(bool on);
-
 /**
+<<<<<<< HEAD
  * @brief Blink LED with custom frequency and duty cycle.
  * 
- * @param frequency_hz        Frequency in Hz (e.g., 1.0 for 1Hz)
- * @param duty_cycle_percent  Duty cycle in percent (e.g., 50.0 for 50%)
+ * @param frequency_hz Blink frequency in Hz
+ * @param duty_cycle_percent Percentage of ON time (0–100)
+>>>>>>> recovery/led-patterns
  */
 void led_blink(float frequency_hz, float duty_cycle_percent);
 
 /**
+<<<<<<< HEAD
  * @brief Placeholder for pulse mode (uses PWM fading or toggling).
  * 
  * @param frequency_hz Pulse frequency in Hz.
+=======
+ * @brief Pulse the LED at a given frequency (on-off-on pattern)
+ * 
+ * @param frequency_hz Pulse rate in Hz
+>>>>>>> recovery/led-patterns
  */
 void led_pulse(float frequency_hz);
 
 /**
+<<<<<<< HEAD
  * @brief Placeholder for fading effect (e.g., fade in/out using LEDC).
  * 
  * @param duration_ms Duration of fade in milliseconds.
@@ -116,6 +130,14 @@ void led_fade(uint32_t duration_ms);
 void led_debug_status(void);
 
 
+=======
+ * @brief Run a one-shot fade in/out animation
+ * 
+ * @param duration_ms Total duration in milliseconds
+ */
+void led_fade(uint32_t duration_ms);
+
+>>>>>>> recovery/led-patterns
 #ifdef __cplusplus
 }
 #endif

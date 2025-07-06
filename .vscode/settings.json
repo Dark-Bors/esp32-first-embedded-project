@@ -6,15 +6,22 @@
     "files.associations": {
         "task.h": "c",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "freertos.h": "c"
 =======
+=======
+>>>>>>> recovery/led-patterns
         "freertos.h": "c",
         "format": "c",
         "algorithm": "c",
         "xiosbase": "c",
         "xlocale": "c",
+<<<<<<< HEAD
         "xutility": "c",
         "numbers": "c"
 >>>>>>> 3d6a7df (🔧 v1.4.0-dev: Finalize LED behavior, timing, debug status)
+=======
+        "xutility": "c"
+>>>>>>> recovery/led-patterns
     }
 }

@@ -1,5 +1,4 @@
 
-```markdown
 # 🌟 OptiPulse™State: Developer Training Project
 
 Welcome to **OptiPulse™State**, a hands-on embedded systems learning project focused on mastering **FreeRTOS**, **state machines**, **LED control**, **CLI interaction**, and **real-time camera streaming** — all on the ESP32-S3.
