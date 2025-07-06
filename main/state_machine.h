@@ -1,5 +1,14 @@
+
+// File: main/state_machine.h
+
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
+#include <stdbool.h>  // Enables use of `bool`, `true`, `false`
+#include <stdint.h> // Enables use of `uint8_t`, `uint32_t`, etc.
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ===============================
 // ENUM: Define all system states
@@ -50,6 +59,10 @@ void transition_to_state(SystemState new_state);
 /**
  * @brief Returns the current system state.
  */
-SystemState get_current_state(void);
 
-#endif // STATE_MACHINE_H
+
+ #ifdef __cplusplus
+}
+#endif
+
+#endif // STATE_MACHINE_H  <-- ENSURE THIS LINE IS PRESENT AND ONLY ONE EXISTS

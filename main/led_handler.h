@@ -1,15 +1,4 @@
-<<<<<<< HEAD
-=======
-// File: main/led_handler.h
-// ==========================================================================================
-// @file led_handler.h
-// @brief LED handler interface for pattern control and GPIO management on ESP32
-//
-// This file declares the public API for controlling LED behavior, including static control,
-// burst patterns, and special modes like Tethered, Untethered, and HALTED.
-// It uses the ESP-IDF GPIO and timer framework and is designed for integration into
-// embedded systems with real-time feedback requirements.
-// ==========================================================================================
+// LED Handler Header File
 
 #ifndef LED_HANDLER_H
 #define LED_HANDLER_H
@@ -20,6 +9,17 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct {
+    uint32_t on_us;
+    uint32_t off_us;
+} led_timing_t;
+
+typedef struct {
+    bool active;
+    uint16_t count;
+} burst_state_t;
+
 
 /**
  * @enum led_pattern_t
@@ -53,7 +53,7 @@ void led_handler_tick(void);
 
 /**
  * @brief Apply a predefined LED blinking pattern based on system state.
- * 
+ *
  * @param pattern The desired pattern to apply from led_pattern_t.
  */
 void led_apply_pattern(led_pattern_t pattern);
@@ -64,42 +64,49 @@ void led_apply_pattern(led_pattern_t pattern);
 void led_on(void);
 
 /**
- * @brief Immediately turn OFF the LED (no timer logic).
+ * @brief Turn the LED OFF (static).
  */
 void led_off(void);
 
 /**
  * @brief Set the LED to a static state (ON or OFF), bypassing pattern logic.
- * 
+ *
  * @param on Pass true to turn ON, false to turn OFF.
  */
 void led_set_static(bool on);
 
 /**
  * @brief Blink LED with custom frequency and duty cycle.
- * 
- * @param frequency_hz        Frequency in Hz (e.g., 1.0 for 1Hz)
- * @param duty_cycle_percent  Duty cycle in percent (e.g., 50.0 for 50%)
+ *
+ * @param frequency_hz Blink frequency in Hz
+ * @param duty_cycle_percent Percentage of ON time (0–100)
  */
 void led_blink(float frequency_hz, float duty_cycle_percent);
 
 /**
  * @brief Placeholder for pulse mode (uses PWM fading or toggling).
- * 
+ *
  * @param frequency_hz Pulse frequency in Hz.
  */
 void led_pulse(float frequency_hz);
 
 /**
  * @brief Placeholder for fading effect (e.g., fade in/out using LEDC).
- * 
+ *
  * @param duration_ms Duration of fade in milliseconds.
  */
 void led_fade(uint32_t duration_ms);
+
+/**
+ * @brief Print debug status of the LED handler.
+ * This function provides detailed information about the current LED state,
+ * including active patterns, burst states, and timer validity.
+ * It is only available in DEV_MODE.
+ */
+void led_debug_status(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif // LED_HANDLER_H
->>>>>>> 3d6a7df (🔧 v1.4.0-dev: Finalize LED behavior, timing, debug status)
