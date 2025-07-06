@@ -1,27 +1,19 @@
 {
-    "idf.pythonInstallPath": "C:\\Espressif\\tools\\idf-python\\3.11.2\\python.exe",
-    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
-    "idf.espIdfPath": "C:/Espressif/frameworks/esp-idf-v5.4.2",
-    "idf.pythonBinPath": "C:/Espressif/python_env/idf5.4_py3.11_env/Scripts/python.exe",
+
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+  "idf.espIdfPath": "C:/Espressif/frameworks/esp-idf-v5.5",
+  "idf.pythonBinPath": "C:/Espressif/python_env/idf5.5_py3.11_env/Scripts/python.exe",
+
     "files.associations": {
         "task.h": "c",
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "freertos.h": "c"
-=======
-=======
->>>>>>> recovery/led-patterns
+
         "freertos.h": "c",
         "format": "c",
         "algorithm": "c",
         "xiosbase": "c",
         "xlocale": "c",
-<<<<<<< HEAD
-        "xutility": "c",
-        "numbers": "c"
->>>>>>> 3d6a7df (🔧 v1.4.0-dev: Finalize LED behavior, timing, debug status)
-=======
+        "numbers": "c",
         "xutility": "c"
->>>>>>> recovery/led-patterns
     }
 }

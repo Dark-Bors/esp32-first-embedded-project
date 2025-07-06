@@ -35,10 +35,10 @@
 #define TETHERED_BLINK_OFF_US  1000000           // 1s OFF
 
 // --- UNTETHERED pattern ---
-#define UNTETHERED_BURST_ON_US   2000            // 2ms ON (250Hz)
-#define UNTETHERED_BURST_OFF_US  2000            // 2ms OFF
+#define UNTETHERED_BURST_ON_US   250000            // 250ms ON (2Hz)
+#define UNTETHERED_BURST_OFF_US  250000            // 250ms OFF
 #define UNTETHERED_BURST_CYCLES  10              // Total 40ms burst
-#define UNTETHERED_PAUSE_US      600000          // 600ms pause between bursts
+#define UNTETHERED_PAUSE_US      500000          // 500ms pause between bursts
 
 // --- RTV pattern ---
 #define RTV_BLINK_ON_US          50000           // 50ms ON (20Hz)

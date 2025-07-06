@@ -51,9 +51,6 @@ SystemState get_current_state(void)
 
 // state_machine.c
 
-#include "state_machine.h" // Header file for the state machine
-#include "esp_log.h" // ESP-IDF logging library for ESP_LOGI/WARNING/ERROR
-
 static const char *TAG = "STATE_MACHINE"; // Log tag for this module
 
 // ==========================================

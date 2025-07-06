@@ -1,5 +1,4 @@
-#ifndef STATE_MACHINE_H
-#define STATE_MACHINE_H
+
 // File: main/state_machine.h
 
 #ifndef STATE_MACHINE_H
@@ -60,3 +59,10 @@ void transition_to_state(SystemState new_state);
 /**
  * @brief Returns the current system state.
  */
+
+
+ #ifdef __cplusplus
+}
+#endif
+
+#endif // STATE_MACHINE_H  <-- ENSURE THIS LINE IS PRESENT AND ONLY ONE EXISTS
