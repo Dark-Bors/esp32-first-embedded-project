@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #include "state_machine.h"
 #include "esp_log.h"     // For logging
 #include "nvs_flash.h"   // Future: to persist state
@@ -48,7 +48,7 @@ SystemState get_current_state(void)
 {
     return current_state;
 }
-=======
+
 // state_machine.c
 
 #include "state_machine.h" // Header file for the state machine
@@ -71,4 +71,3 @@ SystemState get_current_state(void) {
     return current_state;
 }
 
->>>>>>> recovery/led-patterns
