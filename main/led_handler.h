@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // File: main/led_handler.h
 // ==========================================================================================
 // @file led_handler.h
@@ -20,6 +18,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+typedef struct {
+    uint32_t on_us;
+    uint32_t off_us;
+} led_timing_t;
+
+typedef struct {
+    bool active;
+    uint16_t count;
+} burst_state_t;
+
 
 /**
  * @enum led_pattern_t
@@ -97,9 +107,17 @@ void led_pulse(float frequency_hz);
  */
 void led_fade(uint32_t duration_ms);
 
+/**
+ * @brief Print debug status of the LED handler.
+ * This function provides detailed information about the current LED state,
+ * including active patterns, burst states, and timer validity.
+ * It is only available in DEV_MODE.
+ */
+void led_debug_status(void);
+
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif // LED_HANDLER_H
->>>>>>> 3d6a7df (🔧 v1.4.0-dev: Finalize LED behavior, timing, debug status)

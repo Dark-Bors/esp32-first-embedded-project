@@ -1,162 +1,95 @@
-<<<<<<< HEAD
-=======
 // File: main/led_handler.c
 // ==========================================================================================
-// This file implements the LED handler for the OptiPulse™ project.
-// It provides functions to control LED patterns, static states, and burst modes.
-// The LED is controlled via GPIO and uses ESP-IDF's timer API for scheduling.
+// This module implements LED control logic for the OptiPulse™ project.
+// It supports various blinking patterns, burst modes, and static ON/OFF control.
+// Scheduling is done using the ESP-IDF timer API and GPIO control.
 // ==========================================================================================
 
-#include "led_handler.h"        // Include the LED handler header
-#include "driver/gpio.h"        // Include GPIO driver for LED control
-#include "esp_timer.h"          // Include ESP-IDF timer API for scheduling
-#include "esp_log.h"            // Include ESP-IDF logging for debug messages
+#include "led_handler.h"
+#include "driver/gpio.h"
+#include "esp_timer.h"
+#include "esp_log.h"
 
-#define GPIO_LED GPIO_NUM_2  // LED connected to GPIO2
+// === GPIO Configuration ===
+#define GPIO_LED                GPIO_NUM_2       // LED connected to GPIO2
 
-// === OPERATIONAL pattern ===
-#define BURST_ON_US     10000   // 10ms ON
-#define BURST_OFF_US    10000   // 10ms OFF
-#define BURST_PAUSE_US  50000   // 50ms pause after BURST_MAX_CYCLES
-#define BURST_MAX_CYCLES 5      // Number of ON/OFF cycles
+// === Pattern Timings (in microseconds) ===
 
-// === HALTED_ENTRY pattern ===
-#define HALTED_BLINK_ON_US     100000  // 100ms ON (5Hz)
-#define HALTED_BLINK_OFF_US    100000  // 100ms OFF
-#define HALTED_MAX_CYCLES      10      // Total 2s (5Hz blink)
+// --- OPERATIONAL pattern ---
+#define BURST_ON_US            10000             // 10ms ON
+#define BURST_OFF_US           10000             // 10ms OFF
+#define BURST_PAUSE_US         50000             // 50ms pause after burst
+#define BURST_MAX_CYCLES       5                 // Number of ON/OFF cycles
 
-// === TRANSFER_COMPLETE pattern ===
-#define TRANSFER_BLINK_ON_US   500000  // 500ms ON (1Hz)
-#define TRANSFER_BLINK_OFF_US  500000  // 500ms OFF
+// --- HALTED_ENTRY pattern ---
+#define HALTED_BLINK_ON_US     100000            // 100ms ON (5Hz)
+#define HALTED_BLINK_OFF_US    100000            // 100ms OFF
+#define HALTED_MAX_CYCLES      10                // Total 2s duration
 
-// === TETHERED pattern ===
-#define TETHERED_BLINK_ON_US   1000000 // 1s ON (0.5Hz)
-#define TETHERED_BLINK_OFF_US  1000000 // 1s OFF
+// --- TRANSFER_COMPLETE pattern ---
+#define TRANSFER_BLINK_ON_US   500000            // 500ms ON (1Hz)
+#define TRANSFER_BLINK_OFF_US  500000            // 500ms OFF
 
-// === UNTETHERED pattern ===
-#define UNTETHERED_BURST_ON_US     2000    // 2ms ON (250Hz)
-#define UNTETHERED_BURST_OFF_US    2000    // 2ms OFF
-#define UNTETHERED_BURST_CYCLES    10      // Total of 10 cycles (40ms)
-#define UNTETHERED_PAUSE_US        600000  // 600ms pause between bursts
+// --- TETHERED pattern ---
+#define TETHERED_BLINK_ON_US   1000000           // 1s ON (0.5Hz)
+#define TETHERED_BLINK_OFF_US  1000000           // 1s OFF
 
-// === RTV pattern ===
-#define RTV_BLINK_ON_US             50000   // 50ms ON (20Hz)
-#define RTV_BLINK_OFF_US            50000   // 50ms OFF
-#define RTV_BURST_CYCLES            5       // Number of ON/OFF cycles in RTV_ACTIVE
-#define RTV_PAUSE_US                500000  // 500ms pause after RTV burst
+// --- UNTETHERED pattern ---
+#define UNTETHERED_BURST_ON_US   2000            // 2ms ON (250Hz)
+#define UNTETHERED_BURST_OFF_US  2000            // 2ms OFF
+#define UNTETHERED_BURST_CYCLES  10              // Total 40ms burst
+#define UNTETHERED_PAUSE_US      600000          // 600ms pause between bursts
 
-static const char *TAG = "LED_HANDLER"; // Log tag for this module
+// --- RTV pattern ---
+#define RTV_BLINK_ON_US          50000           // 50ms ON (20Hz)
+#define RTV_BLINK_OFF_US         50000           // 50ms OFF
+#define RTV_BURST_CYCLES         5               // 5 bursts
+#define RTV_PAUSE_US             500000          // 500ms pause after burst
 
-// === Static State ===
+// === Logging Tag ===
+static const char *TAG = "LED_HANDLER";
 
-// Holds the current blinking pattern timing (set when a pattern is applied)
-static led_timing_t current_timing;
-static esp_timer_handle_t led_timer = NULL;
-static bool led_state = false;
-static burst_state_t burst = { .active = false, .count = 0 };
+// === Static Internal State ===
 
-// Pattern mode tracking
-static led_pattern_t current_pattern = LED_PATTERN_DEV_MODE;  // Default pattern
+static led_timing_t current_timing;              ///< Current pattern's timing
+static esp_timer_handle_t led_timer = NULL;      ///< Timer for scheduling LED toggles
+static bool led_state = false;                   ///< Current LED level (true = ON)
 
-// === Structures ===
+static burst_state_t burst = { .active = false, .count = 0 }; ///< Burst tracking
+static led_pattern_t current_pattern = LED_PATTERN_DEV_MODE;  ///< Default state
 
-/**
- * @brief Structure to hold LED ON/OFF durations (in microseconds)
- * 
- * This structure is used to configure how long the LED should stay ON and OFF
- * during a blinking cycle. It is used by the timer callback to determine
- * when to toggle the LED next.
- * 
- * Example:
- *  - on_us = 500000 means LED stays ON for 500ms
- *  - off_us = 200000 means LED stays OFF for 200ms
- */
-typedef struct {
-    uint32_t on_us;   // Duration in microseconds to keep LED ON
-    uint32_t off_us;  // Duration in microseconds to keep LED OFF
-} led_timing_t;
+// --- Special Mode Flags ---
+static bool halted_mode_active = false;          ///< Indicates if HALTED_ENTRY pattern is running
+static int halted_blink_count = 0;               ///< Counter for HALTED blinks
+
+static bool untethered_mode_active = false;      ///< Indicates if UNTETHERED burst is active
+static int untethered_blink_count = 0;           ///< Counter for UNTETHERED bursts
+
+// === GPIO LED Control ===
 
 /**
- * @brief Structure to track burst mode state
- * 
- * Burst mode means blinking the LED a fixed number of times, then pausing.
- * This struct helps count how many ON/OFF cycles have completed.
- * 
- * Example:
- *  - If burst.active = true, we are in burst mode
- *  - burst.count increments every OFF phase until reaching the limit
- */
-typedef struct {
-    bool active;  // true = burst mode is active
-    int count;    // number of completed ON/OFF cycles
-} burst_state_t;
-
-
-// === Static State ===
-
-// Global/static variables are used to store the current LED state across function calls
-
-// Holds the current blinking pattern timing (set when a pattern is applied)
-static led_timing_t current_timing;
-
-// Handle for the ESP-IDF timer object
-// This timer will be configured to call our callback at the correct ON/OFF intervals
-static esp_timer_handle_t led_timer = NULL;
-
-// Tracks whether LED is currently ON or OFF (used to toggle the state)
-static bool led_state = false;
-
-// Tracks the burst mode's active flag and how many cycles are done
-static burst_state_t burst = { .active = false, .count = 0 };
-
-// === Special Modes Tracking ===
-// These booleans and counters track specific LED patterns like HALTED or UNTETHERED
-
-// Tracks whether the LED is in HALTED_ENTRY mode
-static bool halted_mode_active = false;
-// Counts how many HALTED blinks have occurred (used to stop after N blinks)
-static int halted_blink_count = 0;
-
-// Tracks whether the LED is in UNTETHERED mode (10x 2ms blinks then pause)
-static bool untethered_mode_active = false;
-// Counter for UNTETHERED burst blink cycles (resets after 10)
-static int untethered_blink_count = 0;
-
-
-// === GPIO Control ===
-
-/**
- * @brief Turn ON the LED by setting the GPIO HIGH (1)
- * 
- * This function sets the configured GPIO pin to high logic level,
- * which physically turns the LED ON (assuming active-high LED wiring).
+ * @brief Turn ON the LED.
  */
 void led_on(void) {
-    gpio_set_level(GPIO_LED, 1);  // Set GPIO to HIGH
-    ESP_LOGI(TAG, "LED turned ON");  // Log this state change
+    gpio_set_level(GPIO_LED, 1);
+    ESP_LOGI(TAG, "LED turned ON");
 }
 
 /**
- * @brief Turn OFF the LED by setting the GPIO LOW (0)
- * 
- * This function sets the configured GPIO pin to low logic level,
- * which physically turns the LED OFF.
+ * @brief Turn OFF the LED.
  */
 void led_off(void) {
-    gpio_set_level(GPIO_LED, 0);  // Set GPIO to LOW
-    ESP_LOGI(TAG, "LED turned OFF");  // Log this state change
+    gpio_set_level(GPIO_LED, 0);
+    ESP_LOGI(TAG, "LED turned OFF");
 }
 
 /**
- * @brief Set LED to a fixed ON or OFF state (no blinking)
+ * @brief Set the LED to a static state (ON or OFF).
  * 
- * This is used when we want the LED to stay in one state (ON or OFF)
- * regardless of any timer or pattern logic. Useful for HALT or IDLE modes.
- * 
- * @param on true = turn LED ON, false = turn it OFF
+ * @param on True to turn ON, false to turn OFF.
  */
 void led_set_static(bool on) {
-    on ? led_on() : led_off();  // Call the appropriate helper function
+    on ? led_on() : led_off();
     ESP_LOGI(TAG, "LED set to static state: %s", on ? "ON" : "OFF");
 }
 
@@ -493,4 +426,3 @@ void led_debug_status(void) {
 
     ESP_LOGI(TAG, "=======================================");
 }
->>>>>>> 3d6a7df (🔧 v1.4.0-dev: Finalize LED behavior, timing, debug status)
