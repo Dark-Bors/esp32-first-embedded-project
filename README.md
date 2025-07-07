@@ -69,13 +69,13 @@ By completing this project, you'll develop:
 
 ## 📐 System Diagram
 
-![State Machine Diagram](state%20machine%20diagram.png)
+![alt text](<state machine diagram.png>)
 
 ---
 
 ## 🔦 LED Pattern Overview
 
-![LED Patterns Overview](LED%20pattern%20timing.png)
+![alt text](<LED pattern timing.png>)
 
 ---
 

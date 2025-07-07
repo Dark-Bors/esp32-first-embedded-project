@@ -1,0 +1,2 @@
+source C:/Users/97254/esp_projects/blink_led/build/bootloader/gdbinit/symbols
+source C:/Users/97254/esp_projects/blink_led/build/bootloader/gdbinit/connect
