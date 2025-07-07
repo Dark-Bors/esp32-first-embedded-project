@@ -1,4 +1,3 @@
-
 # 🌟 OptiPulse™State: Developer Training Project
 
 Welcome to **OptiPulse™State**, a hands-on embedded systems learning project focused on mastering **FreeRTOS**, **state machines**, **LED control**, **CLI interaction**, and **real-time camera streaming** — all on the ESP32-S3.
@@ -70,30 +69,34 @@ By completing this project, you'll develop:
 
 ## 📐 System Diagram
 
-![alt text](image.png)
+![State Machine Diagram](state%20machine%20diagram.png)
+
+---
+
+## 🔦 LED Pattern Overview
+
+![LED Patterns Overview](LED%20pattern%20timing.png)
 
 ---
 
 ## 📂 Project Structure (Simplified)
 
 ```
-
-optipulse\_state/
+optipulse_state/
 │
 ├── main/
-│   ├── main.c               # Entry point (previously blink\_led.c)
-│   ├── cli\_handler.c/h      # UART CLI parser and command dispatcher
-│   ├── state\_machine.c/h    # FSM transitions, state logic, resume logic
-│   ├── led\_controller.c/h   # LED patterns and timed control
-│   ├── config\_loader.c/h    # YAML parsing and loading logic
-│   ├── camera\_handler.c/h   # Real-time view (RTV) logic with timer
-│   ├── storage\_manager.c/h  # SD card or NVS storage interactions
-│   └── transfer\_manager.c/h # Tethered / Untethered log transfer (future)
+│   ├── main.c               # Entry point (previously blink_led.c)
+│   ├── cli_handler.c/h      # UART CLI parser and command dispatcher
+│   ├── state_machine.c/h    # FSM transitions, state logic, resume logic
+│   ├── led_controller.c/h   # LED patterns and timed control
+│   ├── config_loader.c/h    # YAML parsing and loading logic
+│   ├── camera_handler.c/h   # Real-time view (RTV) logic with timer
+│   ├── storage_manager.c/h  # SD card or NVS storage interactions
+│   └── transfer_manager.c/h # Tethered / Untethered log transfer (future)
 │
 ├── sdkconfig                # ESP-IDF config
 ├── README.md                # This file
 └── CMakeLists.txt           # Build instructions
-
 ```
 
 ---
@@ -126,21 +129,66 @@ optipulse\_state/
 
 ## 🧭 Roadmap / Phases
 
-- [x] Phase 1: LED + Logger (Completed)  
-- [x] Phase 2: Add CLI + Config YAML + State Transitions  
-- [ ] Phase 3: Add SD Card Logging + Persistent State Save  
-- [ ] Phase 4: Add Camera + Real-Time View logic  
-- [ ] Phase 5: Implement Tethered / Untethered Flow  
-- [ ] Phase 6: Error Recovery + Auto Resume + OTA (future)
+- [x] Phase 0: LED + Logger (Completed)  
+- [x] Phase 1: Add CLI + Config YAML + State Transitions  
+- [ ] Phase 2: Add SD Card Logging + Persistent State Save  
+- [ ] Phase 3: Add Camera + Real-Time View logic  
+- [ ] Phase 4: Implement Tethered / Untethered Flow  
+- [ ] Phase 5: Error Recovery + Auto Resume + OTA (future)
 
 ---
 
-## 🔐 Security & Reset Logic
+## 🔐 Security Layer Implementation Concept
 
-- Magic key embedded in YAML file  
-- Required to move into or out of restricted states (e.g., HALTED)  
-- NVS stores last state and resets return to same state unless configured otherwise  
-- RTV session resets **do not** automatically restart the stream
+### ✅ Security Levels Table
+
+| Level | Description                        | Example Capabilities                               | GPIO Pattern (18, 19, 21) |
+|-------|------------------------------------|----------------------------------------------------|---------------------------|
+| 0     | 🚫 No access                       | No CLI, no DEV actions, error-only                 | `000`                     |
+| 1     | 🛠 Limited access                  | CLI status, limited config queries                 | `001`                     |
+| 2     | ⚙️ Advanced access                | Can read/set YAML config, inspect logs             | `110`                     |
+| 3     | 🔐 Full access (dev/unlocked mode) | Change state, reset NVS, debug hooks               | `101`                     |
+
+---
+
+### 🧩 Design Decisions Recap
+
+1. **Security Logic Source**
+   - Physical-layer check via 3 input GPIOs at startup (and maybe periodically).
+   - Logic stored in:
+     ```c
+     int get_security_level_from_gpio(void);
+     ```
+
+2. **Integration Point**
+   - Call at system boot (`state_machine_init()`) or CLI entry.
+   - Store in a global `security_level` variable.
+   - Guard sensitive CLI commands:  
+     ```c
+     if (security_level >= 2) { /* allow access */ }
+     ```
+
+3. **Magic Key Logic (Temporary)**
+   - Currently uses plaintext CLI key:  
+     `MAGIC_KEY = "unlocked_dev_123"`
+   - Future upgrade: AES-256 + CRC + ESP Secure Boot
+   - TODO: delete tag to clean it from production
+
+4. **CLI & System Behavior by Security Level**
+
+| Feature                 | Required Level |
+|------------------------|----------------|
+| View system state      | ≥ 1            |
+| View logs              | ≥ 2            |
+| Trigger RTV manually   | ≥ 2            |
+| Change operational state | ≥ 3          |
+| Reset NVS              | 3 only         |
+| Enter HALTED from CLI  | 3 only         |
+
+5. **Fail-Safe Handling**
+   - If GPIO pattern is invalid → fallback to `SEC_LEVEL_0`
+   - In `SEC_LEVEL_0`, most actions are refused and warning is logged
+
 
 ---
 
@@ -151,4 +199,3 @@ This project blends **professional firmware architecture** with **educational de
 ---
 
 > © 2025 Dark Bors — Learning by doing, one LED pulse at a time.
-```
