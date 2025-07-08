@@ -1,2 +1,6 @@
-idf_component_register(SRCS "main.c" "led_handler.c" "led_handler.h"
-                      INCLUDE_DIRS ".")
+set(SOURCES
+    main.c
+    state_machine.c
+    led_handler.c
+    security.c
+)

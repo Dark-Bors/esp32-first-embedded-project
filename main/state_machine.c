@@ -1,8 +1,11 @@
 
-#include "state_machine.h"
-#include "esp_log.h"     // For logging
-#include "nvs_flash.h"   // Future: to persist state
-#include "driver/gpio.h" // Optional: for LED indication
+
+#include "state_machine.h"  // Header for the state machine
+#include "esp_log.h"        // For logging
+#include "nvs_flash.h"      // Future: to persist state
+#include "driver/gpio.h"    // Optional: for LED indication
+#include "led_handler.h"    // For LED patterns
+#include "security.h"   // For security level management (future use)
 
 // =================================
 // Static variable to track the state
@@ -32,13 +35,32 @@ void state_machine_init(void)
 // ============================================
 void transition_to_state(SystemState new_state)
 {
-    // TODO: Add validation if needed
-    // TODO: Call per-state entry behavior (LED pattern, etc.)
-
-    // Log state transition
     ESP_LOGI(TAG, "State change: %d -> %d", current_state, new_state);
-
     current_state = new_state;
+
+    switch (new_state) {
+        case STATE_DEV:
+            led_apply_pattern(LED_PATTERN_DEV_MODE);
+            break;
+        case STATE_OPERATIONAL:
+            led_apply_pattern(LED_PATTERN_OPERATIONAL);
+            break;
+        case STATE_TETHERED:
+            led_apply_pattern(LED_PATTERN_TETHERED);
+            break;
+        case STATE_UNTETHERED:
+            led_apply_pattern(LED_PATTERN_UNTETHERED);
+            break;
+        case STATE_RTV:
+            led_apply_pattern(LED_PATTERN_RTV_ACTIVE);
+            break;
+        case STATE_HALTED:
+            led_apply_pattern(LED_PATTERN_HALTED_ENTRY);
+            break;
+        default:
+            led_off();  // safety default
+            break;
+    }
 }
 
 // ==============================
