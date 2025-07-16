@@ -1,3 +1,4 @@
+// File: main/state_machine.c
 
 
 #include "state_machine.h"  // Header for the state machine
@@ -29,6 +30,57 @@ void state_machine_init(void)
     // Optional: Log this event
     ESP_LOGI(TAG, "State machine initialized in DEV mode");
 }
+// ============================================
+// Handle events and transition states
+// ============================================
+
+void handle_event(event_t event) {
+    ESP_LOGI(TAG, "Handling event: %d in state: %d", event, current_state);
+
+    switch (current_state) {
+
+        case STATE_DEV:
+            if (event == EVENT_CLI_SET_OP) {
+                transition_to_state(STATE_OPERATIONAL);
+            } else if (event == EVENT_CLI_MAGIC_KEY) {
+                ESP_LOGI(TAG, "Magic key received, staying in DEV");
+            }
+            break;
+
+        case STATE_OPERATIONAL:
+            if (event == EVENT_RTV_ON) {
+                transition_to_state(STATE_RTV);
+            } else if (event == EVENT_TRANSFER_COMPLETE) {
+                transition_to_state(STATE_UNTETHERED);
+            }
+            break;
+
+        case STATE_RTV:
+            if (event == EVENT_RTV_OFF || event == EVENT_TIMEOUT) {
+                transition_to_state(STATE_OPERATIONAL);
+            }
+            break;
+
+        case STATE_UNTETHERED:
+            if (event == EVENT_TRANSFER_COMPLETE) {
+                transition_to_state(STATE_OPERATIONAL);
+            }
+            break;
+
+        case STATE_TETHERED:
+            if (event == EVENT_TRANSFER_COMPLETE) {
+                transition_to_state(STATE_OPERATIONAL);
+            }
+            break;
+
+        case STATE_HALTED:
+            if (event == EVENT_CLI_MAGIC_KEY) {
+                transition_to_state(STATE_DEV);
+            }
+            break;
+    }
+}
+
 
 // ============================================
 // Transition to a new state with side effects

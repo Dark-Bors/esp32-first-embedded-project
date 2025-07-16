@@ -57,8 +57,10 @@ void state_machine_init(void);
 void transition_to_state(SystemState new_state);
 
 /**
- * @brief Returns the current system state.
+ * @brief Handle an event and transition states accordingly.
+ *        This function will check the current state and the event,
  */
+void handle_event(event_t event);
 
 
  #ifdef __cplusplus

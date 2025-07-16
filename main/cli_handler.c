@@ -1,3 +1,8 @@
+// main/cli_handler.c
+// ==========================================================================================   
+// This module implements the CLI command handler for the OptiPulse™ project.
+// It registers commands for state management, RTV control, and other system interactions.
+
 #include "cli_handler.h"
 #include "esp_console.h"      // ESP-IDF console system (CLI core)
 #include "esp_log.h"          // For logging

@@ -6,14 +6,14 @@
   "idf.pythonBinPath": "C:/Espressif/python_env/idf5.5_py3.11_env/Scripts/python.exe",
 
     "files.associations": {
-        "task.h": "c",
-
-        "freertos.h": "c",
-        "format": "c",
-        "algorithm": "c",
-        "xiosbase": "c",
-        "xlocale": "c",
-        "numbers": "c",
-        "xutility": "c"
+      "task.h": "c",
+      "freertos.h": "c",
+      "format": "c",
+      "algorithm": "c",
+      "xiosbase": "c",
+      "xlocale": "c",
+      "numbers": "c",
+      "xutility": "c",
+      "state_machine.h": "c"
     }
 }

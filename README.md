@@ -127,14 +127,26 @@ optipulse_state/
 
 ---
 
-## 🧭 Roadmap / Phases
+## 🧭 Implementation Roadmap (Updated)
 
-- [x] Phase 0: LED + Logger (Completed)  
-- [x] Phase 1: Add CLI + Config YAML + State Transitions  
-- [ ] Phase 2: Add SD Card Logging + Persistent State Save  
-- [ ] Phase 3: Add Camera + Real-Time View logic  
-- [ ] Phase 4: Implement Tethered / Untethered Flow  
-- [ ] Phase 5: Error Recovery + Auto Resume + OTA (future)
+You're now ready for the **correct order of implementation**:
+
+### 🔁 Phase 1: Core FSM
+
+* [x] Enum for modes/states
+* [x] `transition_to_state()`
+* [ ] `handle_event()` with full validation (current)
+* [ ] YAML + `magic_key` validation function (`config_validate_and_unlock()`)
+
+### 🎛️ Phase 2: Subsystems (Per Mode)
+
+* [ ] DEV Mode: CLI dispatcher, security check, YAML loader
+* [ ] OPERATIONAL Mode: Periodic check-ins, detect triggers (RTV, USB, Wi-Fi)
+* [ ] RTV: Capture loop, frame builder, SD writer
+* [ ] Tethered/Untethered: Transfer manager
+* [ ] HALTED: Watchdog disable, LED blink, wake on magic key
+
+---
 
 ---
 
@@ -199,3 +211,24 @@ This project blends **professional firmware architecture** with **educational de
 ---
 
 > © 2025 Dark Bors — Learning by doing, one LED pulse at a time.
+
+
+
+System State Transition Table:
+
+| Current State       | Event                     | Next State          | Notes / Comments                |
+| ------------------- | ------------------------- | ------------------- | ------------------------------- |
+| `STATE_DEV`         | `EVENT_CLI_SET_OP`        | `STATE_OPERATIONAL` | User starts normal operation    |
+| `STATE_DEV`         | `EVENT_CLI_MAGIC_KEY`     | `STATE_DEV`         | Already in DEV, no change       |
+| `STATE_OPERATIONAL` | `EVENT_RTV_ON`            | `STATE_RTV`         | RTV session starts (camera on)  |
+| `STATE_OPERATIONAL` | `EVENT_TRANSFER_COMPLETE` | `STATE_UNTETHERED`  | Initiates wireless upload       |
+| `STATE_OPERATIONAL` | `EVENT_ERROR`             | `STATE_HALTED`      | System error encountered        |
+| `STATE_RTV`         | `EVENT_TIMEOUT`           | `STATE_OPERATIONAL` | RTV session ends (auto)         |
+| `STATE_RTV`         | `EVENT_RTV_OFF`           | `STATE_OPERATIONAL` | RTV session ends (manual)       |
+| `STATE_RTV`         | `EVENT_ERROR`             | `STATE_HALTED`      | Error during capture            |
+| `STATE_UNTETHERED`  | `EVENT_TRANSFER_COMPLETE` | `STATE_OPERATIONAL` | Upload done                     |
+| `STATE_UNTETHERED`  | `EVENT_ERROR`             | `STATE_HALTED`      | Upload failed                   |
+| `STATE_TETHERED`    | `EVENT_TRANSFER_COMPLETE` | `STATE_OPERATIONAL` | USB upload done                 |
+| `STATE_TETHERED`    | `EVENT_ERROR`             | `STATE_HALTED`      | USB transfer error              |
+| `STATE_HALTED`      | `EVENT_CLI_MAGIC_KEY`     | `STATE_DEV`         | Recovery with authentication    |
+| `STATE_HALTED`      | any other event           | `STATE_HALTED`      | Ignored until magic key entered |
