@@ -11,17 +11,30 @@
 #include "state_machine.h"             // Placeholder
 #include "esp_system.h"                // ESP-IDF system info
 #include "driver/uart.h"               // For serial input
+#include "version_config.h"            // Firmware version and debug config
+
 
 void show_banner(void) {
     printf("\n");
     printf("###################################################################################\n");
     printf("##                               OptiPulse™ State                                ##\n");
     printf("##                         Developer Training Project                            ##\n");
-    printf("##                                 v1.4.0-dev                                    ##\n");
+    printf("##                                %s                                     ##\n", FW_VERSION_STRING);
     printf("##  This embedded project demonstrates CLI control, LED feedback,                ##\n");
     printf("##  camera RTV sessions, and persistent state logic using the ESP32-S3.          ##\n");
     printf("###################################################################################\n\n");
+    // Display firmware version for debugging purposes!
+    printf("Firmware Version: %s (Major=%d, Minor=%d, Build=%d)\n",
+       FW_VERSION_STRING,
+       FW_VERSION_MAJOR,
+       FW_VERSION_MINOR,
+       FW_VERSION_BUILD);
+
+#if DEV_SHORTCUTS_ENABLED
+    printf("[DEBUG] Developer shortcuts ENABLED (Major > 100)\n\n");
+#endif
 }
+
 
 // Wait for user to press 'c' before starting logic
 void wait_for_user_to_continue(void) {
