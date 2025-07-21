@@ -3,6 +3,7 @@
 // between different operational states based on events and system conditions.
 // It includes initialization, event handling, and state transitions.
 
+#include "esp_mac.h"
 #include "state_machine.h"
 #include "esp_log.h"            // For ESP_LOG macros
 #include "nvs_flash.h"          // TODO: Support persistent state
