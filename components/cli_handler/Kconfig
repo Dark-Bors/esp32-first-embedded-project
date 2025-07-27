@@ -1,0 +1,9 @@
+menu "CLI Handler Options"
+
+config DEV_SHORTCUTS_ENABLED
+    bool "Enable DEV CLI Shortcuts"
+    default y
+    help
+        Allows direct FSM state changes via CLI for development/testing.
+
+endmenu

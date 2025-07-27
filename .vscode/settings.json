@@ -1,19 +1,36 @@
 {
-
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
   "idf.espIdfPath": "C:/Espressif/frameworks/esp-idf-v5.5",
   "idf.pythonBinPath": "C:/Espressif/python_env/idf5.5_py3.11_env/Scripts/python.exe",
-
-    "files.associations": {
-      "task.h": "c",
-      "freertos.h": "c",
-      "format": "c",
-      "algorithm": "c",
-      "xiosbase": "c",
-      "xlocale": "c",
-      "numbers": "c",
-      "xutility": "c",
-      "led_handler.h": "c"
-    }
+  "files.associations": {
+    "task.h": "c",
+    "freertos.h": "c",
+    "format": "c",
+    "algorithm": "c",
+    "xiosbase": "c",
+    "xlocale": "c",
+    "numbers": "c",
+    "xutility": "c",
+    "led_handler.h": "c",
+    "inttypes.h": "c",
+    "security.h": "c",
+    "gpio.h": "c",
+    "version_config.h": "c",
+    "esp_system.h": "c",
+    "esp_console.h": "c",
+    "stdio.h": "c"
+  },
+  "idf.openOcdConfigs": [
+    "board/esp32s3-builtin.cfg"
+  ],
+  "idf.customExtraVars": {
+    "IDF_TARGET": "esp32s3"
+  },
+  "clangd.path": "C:\\Espressif\\tools\\esp-clang\\esp-18.1.2_20240912\\esp-clang\\bin\\clangd.exe",
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=C:\\Espressif\\tools\\xtensa-esp-elf\\esp-14.2.0_20241119\\xtensa-esp-elf\\bin\\xtensa-esp32s3-elf-gcc.exe",
+    "--compile-commands-dir=g:\\My Drive\\02 Train For Job\\Embedded\\OptiPulse\\esp32-first-embedded-project\\build"
+  ]
 }
