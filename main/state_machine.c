@@ -12,6 +12,7 @@
 #include "security.h"           // Magic key, access levels
 #include "config_parser.h"      // Config + magic key validation (DEV → OP)
 #include "version_config.h"  // For version numbers and dev shortcut macros
+#include "security.h" // Or the correct file that declares config_validate_and_unlock
 
 
 // ================================
@@ -19,8 +20,6 @@
 // ================================
 static const char *TAG = "STATE_MACHINE";         ///< Logging tag
 static SystemState current_state = STATE_DEV;     ///< Default startup state
-static uint8_t security_level = 0;                ///< Placeholder (future: GPIO/role auth)
-
 // ================================
 // @brief Initialize the FSM
 // ================================
@@ -31,6 +30,44 @@ void state_machine_init(void)
     current_state = STATE_DEV;  // Default safe state
     ESP_LOGI(TAG, "State machine initialized in DEV mode");
 }
+
+/**
+ * @brief Placeholder for configuration and security validation.
+ *
+ * In production: validate YAML configuration, magic key, or BLE unlock token.
+ * In dev: always allow.
+ *
+ * @return true if validation passes, false otherwise.
+ */
+bool config_validate_and_unlock(void)
+{
+#if DEV_SHORTCUTS_ENABLED
+    return true;  // Developer mode: always allow
+#else
+    // @todo: implement actual validation of YAML & magic key here
+    return false;
+#endif
+}
+
+
+/**
+ * @brief Convert FSM state enum to human-readable string
+ *
+ * @param state Enum value of SystemState
+ * @return const char* Name of the state
+ */
+const char* state_to_string(SystemState state) {
+    switch (state) {
+        case STATE_DEV: return "DEV";
+        case STATE_OPERATIONAL: return "OPERATIONAL";
+        case STATE_TETHERED: return "TETHERED";
+        case STATE_UNTETHERED: return "UNTETHERED";
+        case STATE_RTV: return "RTV";
+        case STATE_HALTED: return "HALTED";
+        default: return "UNKNOWN";
+    }
+}
+
 
 /**
  * @brief Core state machine event dispatcher.
@@ -54,7 +91,7 @@ void state_machine_init(void)
  */
 void handle_event(event_t event)
 {
-    ESP_LOGI(TAG, "Handling event: %d in state: %d", event, current_state);
+    ESP_LOGI(TAG, "Handling event: %d → state: %s (%d)", event, state_to_string(current_state), current_state);
 
     switch (current_state) {
 

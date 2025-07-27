@@ -54,6 +54,13 @@ typedef enum {
 // API FUNCTIONS
 // ============================================================================
 
+
+/**
+ * @brief Convert FSM enum to human-readable string
+ */
+const char* state_to_string(SystemState state);
+
+
 /**
  * @brief Initialize the state machine.
  * 

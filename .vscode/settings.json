@@ -12,7 +12,14 @@
     "xlocale": "c",
     "numbers": "c",
     "xutility": "c",
-    "led_handler.h": "c"
+    "led_handler.h": "c",
+    "inttypes.h": "c",
+    "security.h": "c",
+    "gpio.h": "c",
+    "version_config.h": "c",
+    "esp_system.h": "c",
+    "esp_console.h": "c",
+    "stdio.h": "c"
   },
   "idf.openOcdConfigs": [
     "board/esp32s3-builtin.cfg"

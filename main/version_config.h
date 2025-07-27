@@ -29,6 +29,9 @@
  *  - Numeric CLI override to set system state
  *  - Skip magic key in `STATE_DEV`
  *  - Trigger mock events via UART for testing
- * 
- * This is useful during bring-up, factory t*
-*/
+ *
+ * This is useful during bring-up, factory testing, and developer debugging.
+ */
+
+#endif // VERSION_CONFIG_H
+

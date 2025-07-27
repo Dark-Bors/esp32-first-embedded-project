@@ -10,6 +10,11 @@ static const char *TAG = "SECURITY";
 
 static uint8_t current_level = 0; // Default: open
 
+// uint8_t get_security_level(void) {
+//     return 0; // TEMP: stub for now. Will later check GPIO / keys / OTP / etc.
+// }
+
+
 void security_init(void) {
     ESP_LOGI(TAG, "Security system initialized at level %d", current_level);
 }
@@ -17,6 +22,8 @@ void security_init(void) {
 uint8_t security_get_level(void) {
     return current_level;
 }
+
+
 
 void security_set_level(uint8_t level) {
     if (level <= 2) {

@@ -9,6 +9,8 @@
 #include "driver/gpio.h"
 #include "esp_timer.h"
 #include "esp_log.h"
+#include <inttypes.h>  // For PRIu32 format specifier
+
 
 // === GPIO Configuration ===
 #define GPIO_LED                GPIO_NUM_2       // LED connected to GPIO2
@@ -129,9 +131,10 @@ static void led_timer_callback(void* arg) {
 //
 //
         if (burst.count >= max_cycles) {
-            ESP_LOGI(TAG, "[%s] Burst complete → Pausing %d us",
-                     current_pattern == LED_PATTERN_RTV_ACTIVE ? "RTV" : "OPERATIONAL",
-                     pause_us);
+            ESP_LOGI(TAG, "[%s] Burst complete → Pausing %" PRIu32 " us",
+            current_pattern == LED_PATTERN_RTV_ACTIVE ? "RTV" : "OPERATIONAL",
+            pause_us);
+
 
             burst.active = false;
             burst.count = 0;
@@ -392,7 +395,9 @@ void led_debug_status(void) {
 
     // Basic LED state info
     ESP_LOGI(TAG, "LED physical state: %s", gpio_get_level(GPIO_LED) ? "ON" : "OFF");
-    ESP_LOGI(TAG, "Current timing → ON: %u us | OFF: %u us", current_timing.on_us, current_timing.off_us);
+    ESP_LOGI(TAG, "Current timing → ON: %lu us | OFF: %lu us",
+            (unsigned long)current_timing.on_us,
+            (unsigned long)current_timing.off_us);
 
     // Burst Mode
     if (burst.active) {
